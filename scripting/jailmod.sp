@@ -9,13 +9,14 @@
 #include <config>
 #include <stamm>
 #include <clientprefs>
+#include <base-keyhintbox>
 
-#define PLUGIN_VERSION "0.5"
+#define PLUGIN_VERSION "0.6"
 
 #define TEAM_PRISONERS	2
 #define TEAM_JAILERS 	3
 
-
+#define PRINT_INTERVAL 1.0
 
 /*****************************************************************
 
@@ -225,7 +226,7 @@ public OnMapStart()
 		}
 	}
 
-	CreateTimer(5.0, Timer_PrintStats, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(PRINT_INTERVAL, Timer_PrintStats, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 
 	killedCops = 0;
 }
@@ -808,10 +809,10 @@ PrintStats()
 	LOOP_CLIENTS(client, CLIENTFILTER_INGAME) {
 
 		if (GetConVarBool(muteDeads) && isClientMutedForAlives[client]) {
-			Client_PrintKeyHintText(client, buffer_muted);
+			BaseKeyHintBox_PrintToClient(client, PRINT_INTERVAL, buffer_muted);
 		}
 		else {
-			Client_PrintKeyHintText(client, buffer);
+			BaseKeyHintBox_PrintToClient(client, PRINT_INTERVAL, buffer);
 		}
 	}
 }
