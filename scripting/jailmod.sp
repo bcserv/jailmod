@@ -9,7 +9,7 @@
 #include <config>
 #include <stamm>
 #include <clientprefs>
-#include <base-keyhintbox>
+#include <basekeyhintbox>
 
 #define PLUGIN_VERSION "0.6"
 
@@ -151,6 +151,7 @@ public OnPluginStart()
 
 	RegAdminCmd("sm_dvoice", Command_DVoice, ADMFLAG_ROOT);
 	RegAdminCmd("sm_dmute", Command_DMute, ADMFLAG_ROOT);
+	RegAdminCmd("sm_getcountrybyip", Command_GetCountryByIp, ADMFLAG_ROOT);
 }
 
 public Action:Command_DVoice(client, argc)
@@ -184,6 +185,28 @@ public Action:Command_DMute(client, argc)
 		SetListenOverride(receiver, sender, Listen_No);
 		PrintMessage(client, "[DEBUG] %N can't hear %N anymore", receiver, sender);
 	}
+
+	return Plugin_Handled;
+}
+
+public Action:Command_GetCountryByIp(client, argc)
+{
+	if (argc == 0) {
+		decl String:commandName[32];
+		GetCmdArg(0, commandName, sizeof(commandName));
+		ReplyToCommand(client, "Usage: %s <IP>", commandName);
+
+		return Plugin_Handled;
+	}
+
+	decl
+		String:ip_string[16],
+		String:geoIpCode[3];
+
+	GetCmdArg(1, ip_string, sizeof(ip_string));
+
+	GeoipCode2(ip_string, geoIpCode);
+	ReplyToCommand(client, "GeoIP Code of IP \"%s\": \"%s\"", ip_string, geoIpCode);
 
 	return Plugin_Handled;
 }
